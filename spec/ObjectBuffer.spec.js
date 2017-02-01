@@ -7,7 +7,7 @@ describe(`ObjectBuffer`, () => {
 
 	describe(`API`, () => {
 		it(`should have a custom toString() method`, () => {
-			expect(ObjectBuffer().toString()).toBe(`[object-buffer]`)
+			expect(ObjectBuffer().toString()).toBe(`[object-buffer<0>]`)
 		})
 
 		it(`should have a update() method`, () => {
@@ -16,6 +16,10 @@ describe(`ObjectBuffer`, () => {
 
 		it(`should have a getBufferedProperties() method`, () => {
 			expect(`getBufferedProperties` in (ObjectBuffer())).toBe(true)
+		})
+
+		it(`should have a RingBuffer property`, () => {
+			expect(`RingBuffer` in ObjectBuffer).toBe(true)
 		})
 	})
 

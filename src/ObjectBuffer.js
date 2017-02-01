@@ -3,6 +3,7 @@ import iterate from './Util/iterate'
 import parseProperty from './parseProperty'
 import assembleMeta from './assembleMeta'
 import Err from './Util/Error'
+import RingBuffer from './RingBuffer'
 
 const Default = {
 	handler: {
@@ -134,8 +135,12 @@ ObjectBuffer.prototype.update = function(object) {
 }
 
 ObjectBuffer.prototype.toString = function() {
-	return `[object-buffer]`
+	const numBufferedProperties = Object.keys(this.bufferedProperties).length
+
+	return `[object-buffer<${numBufferedProperties}>]`
 }
+
+ObjectBuffer.RingBuffer = RingBuffer
 
 let test = new ObjectBuffer;
 
