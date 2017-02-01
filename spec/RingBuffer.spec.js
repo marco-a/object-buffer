@@ -52,24 +52,37 @@ describe(`RingBuffer`, () => {
 		expect(RB.getSize()).toBe(3)
 	})
 
+	it(`should return the array as a reference`, () => {
+		const RB = new RingBuffer(3, -1);
+
+		RB.push(1)
+		RB.push(2)
+
+		let ref = RB.getAsArray(true)
+
+		ref[1] = 30
+
+		expect(RB.getAsArray()).toEqual([2, 30, -1])
+	})
+
 	it(`should have a custom toString() method`, () => {
 		const RB = new RingBuffer(3, -1);
 
-		expect(RB.toString()).toEqual(`[RingBuffer<0/3>]`)
+		expect(RB.toString()).toBe(`[RingBuffer<0/3>]`)
 
 		RB.push(1)
 		RB.push(2)
 
-		expect(RB.toString()).toEqual(`[RingBuffer<2/3>]`)
+		expect(RB.toString()).toBe(`[RingBuffer<2/3>]`)
 
 		RB.push(1)
 		RB.push(2)
 
-		expect(RB.toString()).toEqual(`[RingBuffer<3/3>]`)
+		expect(RB.toString()).toBe(`[RingBuffer<3/3>]`)
 
 		RB.clear()
 
-		expect(RB.toString()).toEqual(`[RingBuffer<0/3>]`)
+		expect(RB.toString()).toBe(`[RingBuffer<0/3>]`)
 	})
 
 	it(`should clear the buffer with the specified initial value`, () => {
