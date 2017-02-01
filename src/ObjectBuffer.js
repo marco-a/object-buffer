@@ -11,6 +11,8 @@ const Default = {
 
 			this.update = (value) => {
 				console.log('update ', value)
+
+				return [1337]
 			}
 
 		}
@@ -57,8 +59,9 @@ ObjectBuffer.prototype.getBufferedProperties = function() {
 }
 
 ObjectBuffer.prototype.update = function(object) {
-	const bufferedProperties = getBufferedProperties(object)
-	const that = this
+	let   obj                = JSON.parse(JSON.stringify(object))
+	const bufferedProperties = getBufferedProperties(obj)
+	const that               = this
 
 	iterate(bufferedProperties, function(key) {
 		const bufferedProperty = this[key]
@@ -117,8 +120,16 @@ ObjectBuffer.prototype.update = function(object) {
 		const valueKey    = this[key][`key`]
 		const valueToPush = this[key][`parent`][valueKey]
 
-		that.bufferedProperties[bufferedPropertyKey].instance.update(valueToPush)
+		// remove property from object
+		delete this[key][`parent`][valueKey]
+
+		// and add the buffered one
+		const newValue    = that.bufferedProperties[bufferedPropertyKey].instance.update(valueToPush)
+
+		this[key][`parent`][meta.prop] = newValue
 	})
+
+	return obj
 }
 
 ObjectBuffer.prototype.toString = function() {
@@ -135,12 +146,12 @@ test.update({
 	}
 })
 
-test.update({
+console.log(test.update({
 	test: {
 		'^temp#initial[10]': {
 			val: [2]
 		}
 	}
-})
+}))
 
 export default ObjectBuffer
