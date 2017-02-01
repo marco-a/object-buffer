@@ -4,6 +4,7 @@ import parseProperty from './parseProperty'
 import assembleMeta from './assembleMeta'
 import Err from './Util/Error'
 import RingBuffer from './RingBuffer'
+import debug from './Util/debug'
 
 const Default = {
 	handler: {
@@ -21,6 +22,8 @@ const Default = {
 	},
 
 	options: {
+		debug: false,
+
 		defaultValues: {
 			size: 10,
 			id: `initial`,
@@ -90,11 +93,17 @@ ObjectBuffer.prototype.update = function(object) {
 			const entry = that.bufferedProperties[bufferedPropertyKey]
 
 			if (entry.meta.id != meta.id) {
-				console.log('data id mismatch', entry.meta.id, meta.id)
+				if (that.options.debug) {
+					debug(`Data ID value mismatch <${entry.meta.id} != ${meta.id}>`)
+				}
 			} else if (entry.meta.size != meta.size) {
-				console.log('size mismatch', entry.meta.size, meta.size)
+				if (that.options.debug) {
+					debug(`Size value mismatch <${entry.meta.size} != ${meta.size}>`)
+				}
 			} else if (entry.meta.handler != meta.handler) {
-				console.log('handler mismatch', entry.meta.handler, meta.handler)
+				if (that.options.debug) {
+					debug(`Handler value mismatch <${entry.meta.handler} != ${meta.handler}>`)
+				}
 			} else {
 				needsReinit = false
 			}
