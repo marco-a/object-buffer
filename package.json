@@ -13,6 +13,7 @@
     "nyc": "^10.1.2"
   },
   "scripts": {
-    "test": "babel-node spec/run.js"
+    "test": "babel-node spec/run.js",
+    "coverage": "nyc npm test"
   }
 }
