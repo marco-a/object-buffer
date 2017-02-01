@@ -132,8 +132,9 @@ ObjectBuffer.prototype.update = function(object) {
 			}
 
 			that.bufferedProperties[bufferedPropertyKey] = {
-				meta    : meta,
-				instance: new that.handler[meta.handler](meta.size, suggestedInitialValue)
+				meta        : meta,
+				instance    : new that.handler[meta.handler](meta.size, suggestedInitialValue),
+				absenceCount: 0
 			}
 		}
 
