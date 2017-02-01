@@ -2,6 +2,8 @@ import Err from './Util/Error'
 
 const RingBuffer = function(size, initialValue) {
 	if (!(this instanceof RingBuffer)) {
+		warn(`RingBuffer called without new!`)
+
 		return new RingBuffer(size, initialValue)
 	}
 

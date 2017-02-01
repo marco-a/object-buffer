@@ -22,7 +22,7 @@ const Default = {
 	},
 
 	options: {
-		debug: false,
+		debug: true,
 
 		defaultValues: {
 			size: 10,
@@ -50,6 +50,8 @@ const Default = {
 const ObjectBuffer = function(o_handler, o_options) {
 	// handle calls without new
 	if (!(this instanceof ObjectBuffer)) {
+		warn(`ObjectBuffer called without new!`)
+
 		return new ObjectBuffer(o_handler, o_options)
 	}
 
@@ -163,7 +165,7 @@ test.update({
 
 console.log(test.update({
 	test: {
-		'^temp#initial[10]': {
+		'^temp#initial[10]<default>': {
 			val: [2]
 		}
 	}
