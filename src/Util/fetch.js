@@ -1,3 +1,5 @@
+import Err from './Error'
+
 export default function(input, shouldContinue) {
 	let buffer             = ``
 	let remainder          = ``
@@ -22,7 +24,7 @@ export default function(input, shouldContinue) {
 
 	if (!exitedByCallback) {
 		if (!shouldContinue(false)) {
-			throw new Error(`fetch.js: unexpected end of input!`)
+			throw Err(`fetch.js: unexpected end of input!`)
 		}
 	}
 

@@ -1,5 +1,6 @@
 import fetch from './Util/fetch'
 import isDigit from './Util/isDigit'
+import Err from './Util/Error'
 
 const isControlChar = (char) => {
 	return char in states
@@ -31,7 +32,7 @@ const fetchSize = (char) => {
 	} 
 	// only allow digits
 	else if (!isDigit(char)) {
-		throw new Error(`parseProperty.js: expected a digit but saw '${char}' instead!`)
+		throw Err(`parseProperty.js: expected a digit but saw '${char}' instead!`)
 	}
 
 	return true
@@ -110,12 +111,12 @@ const parseProperty = function(propName) {
 					data[propName] = parseInt(data[propName], 10)
 				}
 			} else {
-				throw new Error(`Duplicate value for '${propName}'!`)
+				throw Err(`Duplicate value for '${propName}'!`)
 			}
 
 			currentBuffer = ret
 		} else {
-			throw new Error(`Unexpected character '${currentBuffer.stopChar}'!`)
+			throw Err(`Unexpected character '${currentBuffer.stopChar}'!`)
 		}
 	} while (currentBuffer.stopChar !== false)
 

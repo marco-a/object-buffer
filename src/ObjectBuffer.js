@@ -2,6 +2,7 @@ import getBufferedProperties from './getBufferedProperties'
 import iterate from './Util/iterate'
 import parseProperty from './parseProperty'
 import assembleMeta from './assembleMeta'
+import Err from './Util/Error'
 
 const Default = {
 	handler: {
@@ -100,7 +101,7 @@ ObjectBuffer.prototype.update = function(object) {
 
 		// check handler
 		if (!(meta.handler in that.handler)) {
-			throw new Error(`Unable to locate handler '${meta.handler}'!`)
+			throw Err(`Unable to locate handler '${meta.handler}'!`)
 		}
 
 		if (needsReinit) {

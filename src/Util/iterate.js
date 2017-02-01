@@ -1,5 +1,6 @@
 import getType from './getType'
 import isIterable from './isIterable'
+import escape from './escape'
 
 const iterate = function(target, callback, parentKeyPath) {
 	if (parentKeyPath === undefined) {
@@ -18,7 +19,7 @@ const iterate = function(target, callback, parentKeyPath) {
 
 		if (getType(target) === `object`) {
 			for (let key in target) {
-				const pathForKey = `${parentKeyPath}['${key}']`
+				const pathForKey = `${parentKeyPath}['${escape(key)}']`
 
 				if (!target.hasOwnProperty(key)) continue
 

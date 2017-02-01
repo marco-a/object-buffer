@@ -1,4 +1,5 @@
 import parseProperty from '../src/parseProperty'
+import Err from '../src/Util/Error'
 
 /*
    +---------+---------+------+
@@ -26,13 +27,13 @@ describe(`parseProperty`, () => {
 		it(`should throw 'unexpected input' for '^prop[1`, () => {
 			expect(() => {
 				parseProperty(`^prop[1`)
-			}).toThrow(new Error(`fetch.js: unexpected end of input!`))
+			}).toThrow(Err(`fetch.js: unexpected end of input!`))
 		})
 
 		it(`should throw 'unexpected char' for '^prop[1a`, () => {
 			expect(() => {
 				parseProperty(`^prop[1a`)
-			}).toThrow(new Error(`parseProperty.js: expected a digit but saw 'a' instead!`))
+			}).toThrow(Err(`parseProperty.js: expected a digit but saw 'a' instead!`))
 		})
 	})
 

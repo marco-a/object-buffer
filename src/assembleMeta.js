@@ -1,15 +1,16 @@
 import isPrimitive from './Util/isPrimitive'
+import Err from './Util/Error'
 
 export default function(meta, parent, parentKeyPath) {
 	let ret = meta
 
 	if (!(`prop` in meta)) {
-		throw new Error(`An unknown error occurred!`)
+		throw Err(`An unknown error occurred!`)
 	}
 
 	// check if prop already exists on the parent object
 	if (meta.prop in parent) {
-		throw new Error(`The property '${meta.prop}' does already exist on '${parentKeyPath}'!`)
+		throw Err(`The property '${meta.prop}' does already exist on '${parentKeyPath}'!`)
 	}
 
 	if (`id` in meta) {
@@ -17,13 +18,13 @@ export default function(meta, parent, parentKeyPath) {
 			const dataIDProp = meta.id.substr(1)
 
 			if (!(dataIDProp in parent)) {
-				throw new Error(`The data ID property '${dataIDProp}' does not exist on '${parentKeyPath}'!`)
+				throw Err(`The data ID property '${dataIDProp}' does not exist on '${parentKeyPath}'!`)
 			}
 
 			const dataIDValue = parent[dataIDProp]
 
 			if (!isPrimitive(dataIDValue)) {
-				throw new Error(`The data ID property '${dataIDProp}' on '${parentKeyPath}' is not a primitive value!`)
+				throw Err(`The data ID property '${dataIDProp}' on '${parentKeyPath}' is not a primitive value!`)
 			}
 
 			ret.id = dataIDValue

@@ -1,4 +1,5 @@
 import assembleMeta from '../src/assembleMeta'
+import Err from '../src/Util/Error'
 
 describe(`assembleMeta`, () => {
 
@@ -7,7 +8,7 @@ describe(`assembleMeta`, () => {
 			assembleMeta({
 
 			}, {}, ``) 
-		}).toThrow(new Error(`An unknown error occurred!`))
+		}).toThrow(Err(`An unknown error occurred!`))
 	})
 
 	it(`should throw an error when 'prop' already exist on the parent object`, () => {
@@ -17,7 +18,7 @@ describe(`assembleMeta`, () => {
 			}, {
 				test: 10
 			}, ``) 
-		}).toThrow(new Error(`The property 'test' does already exist on ''!`))
+		}).toThrow(Err(`The property 'test' does already exist on ''!`))
 	})
 
 	it(`should throw an error when 'id' does not exist on the parent object`, () => {
@@ -27,7 +28,7 @@ describe(`assembleMeta`, () => {
 				id: `@prop`
 			}, {
 			}, ``) 
-		}).toThrow(new Error(`The data ID property 'prop' does not exist on ''!`))
+		}).toThrow(Err(`The data ID property 'prop' does not exist on ''!`))
 	})
 
 	it(`should throw an error when 'id' has not a primitive value`, () => {
@@ -38,7 +39,7 @@ describe(`assembleMeta`, () => {
 			}, {
 				prop: []
 			}, ``) 
-		}).toThrow(new Error(`The data ID property 'prop' on '' is not a primitive value!`))
+		}).toThrow(Err(`The data ID property 'prop' on '' is not a primitive value!`))
 	})
 
 	it(`should return the property name`, () => {
