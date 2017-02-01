@@ -1,4 +1,5 @@
 import Err from './Util/Error'
+import warn from './Util/warn'
 
 const RingBuffer = function(size, initialValue) {
 	if (!(this instanceof RingBuffer)) {
