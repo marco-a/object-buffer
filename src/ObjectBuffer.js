@@ -5,6 +5,7 @@ import assembleMeta from './assembleMeta'
 import Err from './Util/Error'
 import RingBuffer from './RingBuffer'
 import debug from './Util/debug'
+import warn from './Util/warn'
 
 const Default = {
 	handler: {
