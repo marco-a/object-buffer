@@ -55,6 +55,70 @@ describe(`Util.suggestInitialValue`, () => {
 		})
 	})
 
+	describe(`map = default, deep = true`, () => {
+		it(`should return the correct default value for a string`, () => {
+			expect(suggestInitialValue(`test`, true)).toBe(``)
+		})
+
+		it(`should return the correct default value for a number`, () => {
+			expect(suggestInitialValue(10, true)).toBe(0)
+		})
+
+		it(`should return the correct default value for a bool`, () => {
+			expect(suggestInitialValue(true, true)).toBe(false)
+		})
+
+		it(`should return the correct default value for an array`, () => {
+			expect(suggestInitialValue([1], true)).toEqual([0])
+		})
+
+		it(`should return the correct default value for an object`, () => {
+			expect(suggestInitialValue({a:1}, true)).toEqual({a:0})
+		})
+
+		it(`should return the correct default value for a nested object`, () => {
+			let obj = {
+				a: 10,
+				b: true,
+				c: ``,
+				array: [{
+					number: 13,
+					array: []
+				}]
+			}
+
+			const expected = {
+				a: 0,
+				b: false,
+				c: ``,
+				array: [{
+					number: 0,
+					array: []
+				}]
+			}
+
+			expect(suggestInitialValue(obj, true)).toEqual(expected)
+		})
+
+		it(`should not alter the original object`, () => {
+			let obj = {
+				a: 10,
+				b: true,
+				c: ``,
+				array: [{
+					number: 13,
+					array: []
+				}]
+			}
+
+			const objCopy = clone(obj)
+
+			suggestInitialValue(obj, true)
+
+			expect(objCopy).toEqual(obj)
+		})
+	})
+
 	describe(`map = test, deep = true`, () => {
 		it(`should return the correct default value for a string`, () => {
 			expect(suggestInitialValue(`test`, true, testMap)).toBe(testMap.string)
