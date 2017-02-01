@@ -6,19 +6,16 @@ import Err from './Util/Error'
 import RingBuffer from './RingBuffer'
 import debug from './Util/debug'
 import warn from './Util/warn'
+import clone from './Util/clone'
 
 const Default = {
 	handler: {
 		default(requestedBufferSize, suggestedInitialValue) {
-
-			console.log('init buffer ', requestedBufferSize)
+			let Buffer = new RingBuffer(requestedBufferSize, suggestedInitialValue)
 
 			this.update = (value) => {
-				console.log('update ', value)
-
-				return [1337]
+				return Buffer.push(value).getAsArray()
 			}
-
 		}
 	},
 
@@ -67,7 +64,7 @@ ObjectBuffer.prototype.getBufferedProperties = function() {
 }
 
 ObjectBuffer.prototype.update = function(object) {
-	let   obj                = JSON.parse(JSON.stringify(object))
+	let   obj                = clone(object)
 	const bufferedProperties = getBufferedProperties(obj)
 	const that               = this
 
@@ -96,14 +93,17 @@ ObjectBuffer.prototype.update = function(object) {
 			const entry = that.bufferedProperties[bufferedPropertyKey]
 
 			if (entry.meta.id != meta.id) {
+				/* istanbul ignore if */
 				if (that.options.debug) {
 					debug(`Data ID value mismatch <${entry.meta.id} != ${meta.id}>`)
 				}
 			} else if (entry.meta.size != meta.size) {
+				/* istanbul ignore if */
 				if (that.options.debug) {
 					debug(`Size value mismatch <${entry.meta.size} != ${meta.size}>`)
 				}
 			} else if (entry.meta.handler != meta.handler) {
+				/* istanbul ignore if */
 				if (that.options.debug) {
 					debug(`Handler value mismatch <${entry.meta.handler} != ${meta.handler}>`)
 				}
@@ -156,19 +156,15 @@ ObjectBuffer.RingBuffer = RingBuffer
 
 let test = new ObjectBuffer;
 
-test.update({
+console.log(test.update({
 	test: {
-		'^temp[10]': {
-			val: [1]
-		}
+		'^temp[10]': 1
 	}
-})
+}))
 
 console.log(test.update({
 	test: {
-		'^temp#initial[10]<default>': {
-			val: [2]
-		}
+		'^temp#initial[10]<default>': 2
 	}
 }))
 

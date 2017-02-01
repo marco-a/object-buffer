@@ -65,6 +65,19 @@ describe(`RingBuffer`, () => {
 		expect(RB.getAsArray()).toEqual([2, 30, -1])
 	})
 
+	it(`should return the array not as a reference`, () => {
+		const RB = new RingBuffer(3, -1);
+
+		RB.push(1)
+		RB.push(2)
+
+		let ref = RB.getAsArray()
+
+		ref[1] = 30
+
+		expect(RB.getAsArray()).toEqual([2, 1, -1])
+	})
+
 	it(`should have a custom toString() method`, () => {
 		const RB = new RingBuffer(3, -1);
 

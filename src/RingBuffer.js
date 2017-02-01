@@ -1,5 +1,6 @@
 import Err from './Util/Error'
 import warn from './Util/warn'
+import clone from './Util/clone'
 
 const RingBuffer = function(size, initialValue) {
 	if (!(this instanceof RingBuffer)) {
@@ -25,6 +26,8 @@ RingBuffer.prototype.clear = function() {
 	}
 
 	this.used = 0
+
+	return this
 }
 
 RingBuffer.prototype.getSize = function() {
@@ -34,7 +37,7 @@ RingBuffer.prototype.getSize = function() {
 RingBuffer.prototype.getAsArray = function(asReference) {
 	asReference = asReference === undefined ? false : asReference
 
-	return (asReference ? this.array : this.array.slice(0))
+	return (asReference ? this.array : clone(this.array))
 }
 
 RingBuffer.prototype.push = function(value) {
@@ -48,6 +51,8 @@ RingBuffer.prototype.push = function(value) {
 	}
 
 	this.array[0] = value
+
+	return this
 }
 
 RingBuffer.prototype.toString = function() {
