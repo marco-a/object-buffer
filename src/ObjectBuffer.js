@@ -7,6 +7,7 @@ import RingBuffer from './RingBuffer'
 import debug from './Util/debug'
 import warn from './Util/warn'
 import clone from './Util/clone'
+import suggestInitialValue from './Util/suggestInitialValue'
 
 const Default = {
 	handler: {
@@ -117,7 +118,12 @@ ObjectBuffer.prototype.update = function(object) {
 			throw Err(`Unable to locate handler '${meta.handler}'!`)
 		}
 
+		const valueKey    = this[key][`key`]
+		const valueToPush = this[key][`parent`][valueKey]
+
 		if (needsReinit) {
+			const suggestedInitialValue = suggestInitialValue(valueToPush, that.options.suggestedInitialValues.deep, that.options.suggestedInitialValues.map)
+
 			if (exists) {
 				that.bufferedProperties[bufferedPropertyKey].instance = null
 
@@ -127,12 +133,9 @@ ObjectBuffer.prototype.update = function(object) {
 
 			that.bufferedProperties[bufferedPropertyKey] = {
 				meta    : meta,
-				instance: new that.handler[meta.handler](meta.size)
+				instance: new that.handler[meta.handler](meta.size, suggestedInitialValue)
 			}
 		}
-
-		const valueKey    = this[key][`key`]
-		const valueToPush = this[key][`parent`][valueKey]
 
 		// remove property from object
 		delete this[key][`parent`][valueKey]
