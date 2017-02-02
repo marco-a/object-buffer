@@ -112,12 +112,12 @@ const parseProperty = function(propName) {
 					data[propName] = parseInt(data[propName], 10)
 				}
 			} else {
-				throw Err(`Duplicate value for '${propName}'!`)
+				throw Err(`parseProperty.js: duplicate value for '${propName}'!`)
 			}
 
 			currentBuffer = ret
 		} else {
-			throw Err(`Unexpected character '${currentBuffer.stopChar}'!`)
+			throw Err(`parseProperty.js: unexpected character '${currentBuffer.stopChar}'!`)
 		}
 	} while (currentBuffer.stopChar !== false)
 

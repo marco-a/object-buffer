@@ -23,20 +23,6 @@ import Err from '../src/Util/Error'
    +---------+---------+------+
  */
 describe(`parseProperty`, () => {
-	describe(`invalid inputs`, () => {
-		it(`should throw 'unexpected input' for '^prop[1`, () => {
-			expect(() => {
-				parseProperty(`^prop[1`)
-			}).toThrow(Err(`fetch.js: unexpected end of input!`))
-		})
-
-		it(`should throw 'unexpected char' for '^prop[1a`, () => {
-			expect(() => {
-				parseProperty(`^prop[1a`)
-			}).toThrow(Err(`parseProperty.js: expected a digit but saw 'a' instead!`))
-		})
-	})
-
 	describe(`valid inputs`, () => {
 		const parseTest = (input, expectedOutput) => {
 			it(`should properly parse '${input}'`, () => {
@@ -121,5 +107,62 @@ describe(`parseProperty`, () => {
 			size: 10,
 			handler: `handler`
 		})
+	})
+
+	describe(`invalid inputs`, () => {
+
+/*
+		it(`should throw 'unexpected input' for '^prop[1`, () => {
+			expect(() => {
+				parseProperty(`^prop[1`)
+			}).toThrow(Err(`fetch.js: unexpected end of input!`))
+		})
+
+		it(`should throw 'unexpected char' for '^prop[1a`, () => {
+			expect(() => {
+				parseProperty(`^prop[1a`)
+			}).toThrow(Err(`parseProperty.js: expected a digit but saw 'a' instead!`))
+		})
+*/
+
+		const testThrowError = (input, error) => {
+			it(`should throw \`${error}\` for '${input}'`, () => {
+				expect(() => {
+					parseProperty(input)
+				}).toThrow(Err(error))
+			})
+		}
+
+		/*
+		it(`should return 'false' for ''`, () => {
+			expect(parse(``)).toBe(false)
+		})
+
+		it(`should return 'false' for '^'`, () => {
+			expect(parse(`^`)).toBe(false)
+		})
+
+		it(`should return 'false' for 'test'`, () => {
+			expect(parse(`test`)).toBe(false)
+		})*/
+
+		testThrowError(`^prop[#`, `parseProperty.js: expected a digit but saw '#' instead!`)
+		testThrowError(`^prop[10`, `fetch.js: unexpected end of input!`)
+		testThrowError(`^prop[1a`, `parseProperty.js: expected a digit but saw 'a' instead!`)
+		testThrowError(`^prop[10<handler>`, `parseProperty.js: expected a digit but saw '<' instead!`)
+		testThrowError(`^prop[10]<handler`, `fetch.js: unexpected end of input!`)
+		testThrowError(`^prop[10][10]`, `parseProperty.js: duplicate value for 'size'!`)
+		testThrowError(`^prop#id#id`, `parseProperty.js: duplicate value for 'id'!`)
+		testThrowError(`^prop#id@id`, `parseProperty.js: duplicate value for 'id'!`)
+		testThrowError(`^prop<handler><handler>`, `parseProperty.js: duplicate value for 'handler'!`)
+		testThrowError(`^prop[10]#handler<handler>[10]`, `parseProperty.js: duplicate value for 'size'!`)
+		/*
+
+
+		testThrowError(`^prop^prop`, Util.Errors.PROP_ALREADY_HAS_VALUE(`prop`))
+
+
+		testThrowError(`^prop#handler<handler>[10]^prop`, Util.Errors.PROP_ALREADY_HAS_VALUE(`prop`))
+		*/
 	})
 })
