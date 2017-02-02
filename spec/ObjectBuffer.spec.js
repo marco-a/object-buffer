@@ -1,4 +1,5 @@
 import ObjectBuffer from '../src/ObjectBuffer'
+import Err from '../src/Util/Error'
 
 describe(`ObjectBuffer`, () => {
 	it(`should call new if omitted`, () => {
@@ -49,20 +50,22 @@ describe(`ObjectBuffer`, () => {
 			let OB = new ObjectBuffer;
 
 			OB.update({
-				'^test-1#1': 10
+				'^test-1[3]#1': 1
 			})
 
 			expect(`['test-1']` in OB.getBufferedProperties()).toBe(true)
 			let entry = OB.getBufferedProperties()[`['test-1']`]
 			expect(entry.meta.id).toBe(`1`)
+			expect(entry.instance.get()).toEqual([1, 0, 0])
 
 			OB.update({
-				'^test-1#2': 10
+				'^test-1[3]#2': 2
 			})
 
 			expect(`['test-1']` in OB.getBufferedProperties()).toBe(true)
 			entry = OB.getBufferedProperties()[`['test-1']`]
 			expect(entry.meta.id).toBe(`2`)
+			expect(entry.instance.get()).toEqual([2, 0, 0])
 		})
 
 		it(`should re-init a updated buffered property on data id change (@)`, () => {
@@ -70,21 +73,23 @@ describe(`ObjectBuffer`, () => {
 
 			OB.update({
 				'id': 13,
-				'^test-1@id': 10
+				'^test-1[3]@id': 1
 			})
 
 			expect(`['test-1']` in OB.getBufferedProperties()).toBe(true)
 			let entry = OB.getBufferedProperties()[`['test-1']`]
 			expect(entry.meta.id).toBe(13)
+			expect(entry.instance.get()).toEqual([1, 0, 0])
 
 			OB.update({
 				'id': 14,
-				'^test-1@id': 10
+				'^test-1[3]@id': 2
 			})
 
 			expect(`['test-1']` in OB.getBufferedProperties()).toBe(true)
 			entry = OB.getBufferedProperties()[`['test-1']`]
 			expect(entry.meta.id).toBe(14)
+			expect(entry.instance.get()).toEqual([2, 0, 0])
 		})
 
 		it(`should *not* re-init a updated buffered property when no data id change occurred (#/@)`, () => {
@@ -92,20 +97,89 @@ describe(`ObjectBuffer`, () => {
 
 			OB.update({
 				'id': 13,
-				'^test-1@id': 10
+				'^test-1[3]@id': 1
 			})
 
 			expect(`['test-1']` in OB.getBufferedProperties()).toBe(true)
 			let entry = OB.getBufferedProperties()[`['test-1']`]
 			expect(entry.meta.id).toBe(13)
+			expect(entry.instance.get()).toEqual([1, 0, 0])
 
 			OB.update({
-				'^test-1#13': 10
+				'^test-1[3]#13': 2
 			})
 
 			expect(`['test-1']` in OB.getBufferedProperties()).toBe(true)
 			entry = OB.getBufferedProperties()[`['test-1']`]
 			expect(entry.meta.id).toBe(13)
+			expect(entry.instance.get()).toEqual([2, 1, 0])
+		})
+
+		it(`should throw an exception when the data id value is not a primitive value`, () => {
+			let OB = new ObjectBuffer;
+
+			expect(() => {
+				OB.update({
+					test: {
+						'id': [],
+						'^test-1@id': 10
+					}
+				})
+			}).toThrow(Err(`The data ID property 'id' on '['test']' is not a primitive value!`))
+		})
+
+		it(`should return a newly created object`, () => {
+			let OB = new ObjectBuffer;
+
+			let input = {
+				system: {
+					cores: [{
+						'^temp': 10
+					}]
+				}
+			}
+
+			const expectedOutput = {
+				system: {
+					cores: [{
+						temp: [10, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+					}]
+				}
+			}
+
+			let output = OB.update(input)
+
+			expect(output).toEqual(expectedOutput)
+
+			// test clone
+			output.system.cores.temp = false
+
+			expect(input.system.cores.temp).not.toBe(false)
+			expect(`^temp` in input.system.cores[0]).toBe(true)
+		})
+
+		it(`throw an exception when the global data id was not found`, () => {
+			let OB = new ObjectBuffer({}, {
+				globalDataID: `testID`
+			})
+
+			expect(() => {
+				OB.update({
+
+				})
+			}).toThrow(Err(`Global data ID 'testID' not found on object!`))
+		})
+
+		it(`throw an exception when the global data id value is not a primitive`, () => {
+			let OB = new ObjectBuffer({}, {
+				globalDataID: `testID`
+			})
+
+			expect(() => {
+				OB.update({
+					testID: {}
+				})
+			}).toThrow(Err(`The global data ID value on 'testID' is not a primitive!`))
 		})
 	})
 })
