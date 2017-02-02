@@ -2,7 +2,7 @@
   "name": "object-buffer",
   "version": "0.0.2",
   "description": "A simple library to buffer properties on an object.",
-  "main": "src/ObjectBuffer.js",
+  "main": "dist/ObjectBuffer.js",
   "author": "Marco A.",
   "license": "MIT",
   "url": "https://github.com/marco-a/object-buffer",
@@ -16,6 +16,7 @@
     "nyc": "^10.1.2"
   },
   "scripts": {
+    "compile": "rm -rf dist && babel src --out-dir=dist",
     "test": "babel-node spec/run.js",
     "coverage": "babel-istanbul cover spec/run.js",
     "example": "babel-node src/example.js"

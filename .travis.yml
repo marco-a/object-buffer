@@ -1,5 +1,7 @@
 language: node_js
 node_js: [5.4.0]
+deploy:
+- "npm run compile"
 after_script:
 - "npm run coverage"
 - "npm install coveralls && cat ./coverage/lcov.info | coveralls"
