@@ -122,8 +122,10 @@ ObjectBuffer.prototype.getBufferedProperties = function() {
 	return this.bufferedProperties
 }
 
-const deleteBufferedProperty = (props, prop) => {
-	debug(`Deleting property ${prop}`)
+const deleteBufferedProperty = (props, prop, debugEnabled) => {
+	if (debugEnabled) {
+		debug(`Deleting property ${prop}`)
+	}
 
 	props[prop].instance = null
 
@@ -160,7 +162,7 @@ ObjectBuffer.prototype.update = function(object) {
 
 			// delete all buffered properties
 			iterate(that.bufferedProperties, function (key) {
-				deleteBufferedProperty(that.bufferedProperties, key)
+				deleteBufferedProperty(that.bufferedProperties, key, that.options.debug)
 			})
 		}
 	}
@@ -226,7 +228,7 @@ ObjectBuffer.prototype.update = function(object) {
 			const suggestedInitialValue = suggestInitialValue(valueToPush, that.options.suggestedInitialValues.deep, that.options.suggestedInitialValues.map)
 
 			if (exists) {
-				deleteBufferedProperty(that.bufferedProperties, bufferedPropertyKey)
+				deleteBufferedProperty(that.bufferedProperties, bufferedPropertyKey, that.options.debug)
 			}
 
 			that.bufferedProperties[bufferedPropertyKey] = {
@@ -269,7 +271,7 @@ ObjectBuffer.prototype.update = function(object) {
 
 		if (that.options.maxAbsenceCount !== -1) {
 			if (entry.absenceCount >= that.options.maxAbsenceCount) {
-				deleteBufferedProperty(that.bufferedProperties, key)
+				deleteBufferedProperty(that.bufferedProperties, key, that.options.debug)
 			}
 		}
 	})
