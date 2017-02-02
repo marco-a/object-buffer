@@ -27,7 +27,7 @@ const Default = {
 	},
 
 	options: {
-		debug: true,
+		debug: false,
 
 		defaultValues: {
 			size: 10,
@@ -78,6 +78,10 @@ const ObjectBuffer = function(o_handler, o_options) {
 	this.options               = clone(Default.options)
 	// initialize last global data id value
 	this.lastGlobalDataIDValue = false
+
+	if (`debug` in o_options) {
+		this.options.debug = o_options.debug
+	}
 
 	if (`globalDataID` in o_options) {
 		this.options.globalDataID    = o_options.globalDataID
