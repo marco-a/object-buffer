@@ -8,6 +8,8 @@
   "url": "https://github.com/marco-a/object-buffer",
   "dependencies": {
     "babel-cli": "^6.22.2",
+    "babel-core": "^6.22.1",
+    "babel-istanbul": "^0.12.1",
     "babel-preset-es2015": "^6.22.0",
     "jasmine": "^2.5.3",
     "jasmine-spec-reporter": "^3.2.0",
@@ -15,14 +17,7 @@
   },
   "scripts": {
     "test": "babel-node spec/run.js",
-    "coverage": "nyc npm test",
+    "coverage": "babel-istanbul cover spec/run.js",
     "example": "babel-node src/example.js"
-  },
-  "nyc": {
-    "include": [
-      "src/**/*.js"
-    ],
-    "sourceMap": false,
-    "instrument": false
   }
 }
