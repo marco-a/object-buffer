@@ -30,7 +30,9 @@ describe(`ObjectBuffer`, () => {
 		})
 
 		it(`should return all buffered properties`, () => {
-			let OB = new ObjectBuffer;
+			let OB = new ObjectBuffer({}, {
+				maxAbsenceCount: -1
+			});
 
 			OB.update({
 				'^test-1': 10
@@ -241,6 +243,61 @@ describe(`ObjectBuffer`, () => {
 			expect(entry.meta.id).toBe(`test`)
 			expect(entry.meta.size).toBe(`test-size`)
 			expect(entry.meta.handler).toBe(`_test`)
+		})
+
+		it(`should correctly count and reset the absence count of a property`, () => {
+			let OB = new ObjectBuffer({}, {
+				maxAbsenceCount: -1
+			});
+
+			OB.update({
+				test: {
+					'^test-1': 10
+				}
+			})
+
+			let entry = OB.getBufferedProperties()[`['test']['test-1']`]
+
+			expect(entry.absenceCount).toBe(0)
+
+			OB.update({})
+			expect(entry.absenceCount).toBe(1)
+
+			OB.update({})
+			expect(entry.absenceCount).toBe(2)
+
+			OB.update({
+				test: {
+					'^test-1': 10
+				}
+			})
+
+			expect(entry.absenceCount).toBe(0)
+		})
+
+		it(`should delete a property once reached maxAbsenceCount`, () => {
+			let OB = new ObjectBuffer({}, {
+				maxAbsenceCount: 2
+			});
+
+			OB.update({
+				test: {
+					'^test-1': 10
+				}
+			})
+
+			let entry = OB.getBufferedProperties()[`['test']['test-1']`]
+
+			expect(entry.absenceCount).toBe(0)
+
+			OB.update({})
+			expect(entry.absenceCount).toBe(1)
+
+			OB.update({})
+			expect(entry.absenceCount).toBe(2)
+
+			OB.update({})
+			expect(`['test']['test-1']` in OB.getBufferedProperties()).toBe(false)
 		})
 	})
 })

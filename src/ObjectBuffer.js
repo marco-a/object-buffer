@@ -91,7 +91,11 @@ const ObjectBuffer = function(o_handler, o_options) {
 	this.lastGlobalDataIDValue = false
 
 	if (`globalDataID` in o_options) {
-		this.options.globalDataID = o_options.globalDataID
+		this.options.globalDataID    = o_options.globalDataID
+	}
+
+	if (`maxAbsenceCount` in o_options) {
+		this.options.maxAbsenceCount = o_options.maxAbsenceCount
 	}
 
 	// -- fix me with a function
@@ -115,6 +119,8 @@ ObjectBuffer.prototype.getBufferedProperties = function() {
 }
 
 const deleteBufferedProperty = (props, prop) => {
+	debug(`Deleting property ${prop}`)
+
 	props[prop].instance = null
 
 	delete props[prop].instance
@@ -154,6 +160,11 @@ ObjectBuffer.prototype.update = function(object) {
 			})
 		}
 	}
+
+	// paint all properties
+	iterate(that.bufferedProperties, function(key) {
+		this[key].present = false
+	})
 
 	iterate(bufferedProperties, function(key) {
 		const bufferedProperty = this[key]
@@ -217,7 +228,8 @@ ObjectBuffer.prototype.update = function(object) {
 			that.bufferedProperties[bufferedPropertyKey] = {
 				meta        : meta,
 				instance    : new that.handler[meta.handler](meta.size, suggestedInitialValue),
-				absenceCount: 0
+				absenceCount: 0,
+				present     : true
 			}
 		}
 
@@ -228,6 +240,34 @@ ObjectBuffer.prototype.update = function(object) {
 		const newValue    = that.bufferedProperties[bufferedPropertyKey].instance.update(valueToPush)
 
 		this[key][`parent`][meta.prop] = newValue
+
+		// set present flag
+		that.bufferedProperties[bufferedPropertyKey].present      = true
+		// reset absence count
+		that.bufferedProperties[bufferedPropertyKey].absenceCount = 0
+	})
+
+	// increase absence count for non present props
+	iterate(that.bufferedProperties, function(key) {
+		const entry = this[key]
+
+		if (entry.present === true) {
+			return
+		}
+
+		/* istanbul ignore if */
+		if (that.options.debug) {
+			debug(`${key} is not present!`)
+		}
+
+		// increase absence count
+		++entry.absenceCount
+
+		if (that.options.maxAbsenceCount !== -1) {
+			if (entry.absenceCount >= that.options.maxAbsenceCount) {
+				deleteBufferedProperty(that.bufferedProperties, key)
+			}
+		}
 	})
 
 	return obj
@@ -241,7 +281,9 @@ ObjectBuffer.prototype.toString = function() {
 
 ObjectBuffer.RingBuffer = RingBuffer
 
-let test = new ObjectBuffer;
+let test = new ObjectBuffer({}, {
+	maxAbsenceCount: 2
+});
 
 console.log(test.update({
 	test: {
@@ -253,6 +295,10 @@ console.log(test.update({
 	test: {
 		'^temp#initial[10]<default>': 2
 	}
+}))
+
+console.log(test.update({
+	test: {}
 }))
 
 export default ObjectBuffer
