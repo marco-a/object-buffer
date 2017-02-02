@@ -88,6 +88,10 @@ const parseProperty = function(propName) {
 		stopChar : `^`
 	}
 
+	if (propName[0] !== `^` || propName === `^`) {
+		return false
+	}
+
 	do {
 		/* istanbul ignore else */
 		if (currentBuffer.stopChar in states) {
