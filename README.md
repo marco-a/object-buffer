@@ -1,4 +1,4 @@
-# ObjectBuffer ![Build status](https://api.travis-ci.org/marco-a/object-buffer.svg?branch=master)
+# ObjectBuffer ![Build status](https://api.travis-ci.org/marco-a/object-buffer.svg?branch=master) [![Coverage Status](https://coveralls.io/repos/github/marco-a/object-buffer/badge.svg?branch=master)](https://coveralls.io/github/marco-a/object-buffer?branch=master)
 ---
 
 ## What is this?
