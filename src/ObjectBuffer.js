@@ -23,6 +23,16 @@ const Default = {
 			this.get = () => {
 				return Buffer.getAsArray()
 			}
+		},
+
+		test(requestedBufferSize, suggestedInitialValue) {
+			this.update = (value) => {
+				return `test-update`
+			}
+
+			this.get = () => {
+				return `test-get`
+			}
 		}
 	},
 
@@ -71,13 +81,32 @@ const ObjectBuffer = function(o_handler, o_options) {
 	// initialize buffered properties storage
 	this.bufferedProperties    = {}
 	// initialize options
-	this.handler               = Default.handler
-	this.options               = Default.options
+	this.handler               = {
+		default: Default.handler.default,
+		'_test': Default.handler.test
+	}
+
+	this.options               = clone(Default.options)
 	// initialize last global data id value
 	this.lastGlobalDataIDValue = false
 
 	if (`globalDataID` in o_options) {
 		this.options.globalDataID = o_options.globalDataID
+	}
+
+	// -- fix me with a function
+	if (`defaultValues` in o_options) {
+		if (`size` in o_options.defaultValues) {
+			this.options.defaultValues.size = o_options.defaultValues.size
+		}
+
+		if (`id` in o_options.defaultValues) {
+			this.options.defaultValues.id = o_options.defaultValues.id
+		}
+
+		if (`handler` in o_options.defaultValues) {
+			this.options.defaultValues.handler = o_options.defaultValues.handler
+		}
 	}
 }
 
@@ -98,30 +127,30 @@ ObjectBuffer.prototype.update = function(object) {
 	const that               = this
 
 	// global data ID specified?
-	if (this.options.globalDataID !== false) {
+	if (that.options.globalDataID !== false) {
 		// does global data ID exist on `object`?
-		if (!(this.options.globalDataID in obj)) {
-			throw Err(`Global data ID '${this.options.globalDataID}' not found on object!`)
+		if (!(that.options.globalDataID in obj)) {
+			throw Err(`Global data ID '${that.options.globalDataID}' not found on object!`)
 		}
 
 		// get global data id value
-		const globalDataIDValue = obj[this.options.globalDataID]
+		const globalDataIDValue = obj[that.options.globalDataID]
 
 		if (!isPrimitive(globalDataIDValue)) {
-			throw Err(`The global data ID value on '${this.options.globalDataID}' is not a primitive!`)
+			throw Err(`The global data ID value on '${that.options.globalDataID}' is not a primitive!`)
 		}
 
-		if (this.lastGlobalDataIDValue !== globalDataIDValue) {
+		if (that.lastGlobalDataIDValue !== globalDataIDValue) {
 			/* istanbul ignore if */
-			if (this.options.debug) {
-				debug(`Global data ID value mismatch <${this.lastGlobalDataIDValue} != ${globalDataIDValue}>`)
+			if (that.options.debug) {
+				debug(`Global data ID value mismatch <${that.lastGlobalDataIDValue} != ${globalDataIDValue}>`)
 			}
 
-			this.lastGlobalDataIDValue = globalDataIDValue
+			that.lastGlobalDataIDValue = globalDataIDValue
 
 			// delete all buffered properties
-			iterate(this.bufferedProperties, (key) => {
-				deleteBufferedProperty(this.bufferedProperties, key)
+			iterate(that.bufferedProperties, function (key) {
+				deleteBufferedProperty(that.bufferedProperties, key)
 			})
 		}
 	}

@@ -217,5 +217,30 @@ describe(`ObjectBuffer`, () => {
 
 			expect(OB.getBufferedProperties()[`['test']['test-1']`].instance.get()).toEqual([33, 0, 0])
 		})
+
+		it(`should use the specified default values`, () => {
+			let OB = new ObjectBuffer({}, {
+				defaultValues: {
+					id: `test`,
+					handler: `_test`,
+					size: `test-size`
+				}
+			});
+
+			OB.update({
+				test: {
+					'^test-1': 10
+				}
+			})
+
+			let entry = OB.getBufferedProperties()[`['test']['test-1']`]
+
+			expect(entry.instance.get()).toBe(`test-get`)
+			expect(entry.instance.update(1)).toBe(`test-update`)
+
+			expect(entry.meta.id).toBe(`test`)
+			expect(entry.meta.size).toBe(`test-size`)
+			expect(entry.meta.handler).toBe(`_test`)
+		})
 	})
 })
