@@ -1,4 +1,4 @@
-# ObjectBuffer 
+# ObjectBuffer ![Build status](https://api.travis-ci.org/marco-a/object-buffer.svg?branch=master)
 ---
 
 ## What is this?
