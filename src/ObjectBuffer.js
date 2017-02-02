@@ -285,24 +285,4 @@ ObjectBuffer.prototype.toString = function() {
 
 ObjectBuffer.RingBuffer = RingBuffer
 
-let test = new ObjectBuffer({}, {
-	maxAbsenceCount: 2
-});
-
-console.log(test.update({
-	test: {
-		'^temp[10]': 1
-	}
-}))
-
-console.log(test.update({
-	test: {
-		'^temp#initial[10]<default>': 2
-	}
-}))
-
-console.log(test.update({
-	test: {}
-}))
-
 export default ObjectBuffer
