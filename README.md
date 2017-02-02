@@ -43,6 +43,11 @@ packet = ObjectBufferInstance.update(packet)
 
 *done!*
 ---
+# Installation
+
+`$ npm install object-buffer --save`
+
+---
 # Property naming
 `ObjectBuffer` only considers properties prefixed with a  `^`.
 
