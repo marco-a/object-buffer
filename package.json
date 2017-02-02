@@ -15,5 +15,12 @@
   "scripts": {
     "test": "babel-node spec/run.js",
     "coverage": "nyc npm test"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.js"
+    ],
+    "sourceMap": false,
+    "instrument": false
   }
 }
