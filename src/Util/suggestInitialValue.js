@@ -35,6 +35,7 @@ const suggestInitialValue = function(v, deep, map) {
 		return vCopy
 	}
 
+	/* istanbul ignore next */
 	return map.fallBack
 }
 

@@ -89,6 +89,7 @@ const parseProperty = function(propName) {
 	}
 
 	do {
+		/* istanbul ignore else */
 		if (currentBuffer.stopChar in states) {
 			stop = false
 
