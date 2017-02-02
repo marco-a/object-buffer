@@ -23,16 +23,6 @@ const Default = {
 			this.get = () => {
 				return Buffer.getAsArray()
 			}
-		},
-
-		test(requestedBufferSize, suggestedInitialValue) {
-			this.update = (value) => {
-				return `test-update`
-			}
-
-			this.get = () => {
-				return `test-get`
-			}
 		}
 	},
 
@@ -82,8 +72,7 @@ const ObjectBuffer = function(o_handler, o_options) {
 	this.bufferedProperties    = {}
 	// initialize options
 	this.handler               = {
-		default: Default.handler.default,
-		'_test': Default.handler.test
+		default: Default.handler.default
 	}
 
 	this.options               = clone(Default.options)
@@ -112,6 +101,17 @@ const ObjectBuffer = function(o_handler, o_options) {
 			this.options.defaultValues.handler = o_options.defaultValues.handler
 		}
 	}
+
+	// merge handler
+	const that = this
+
+	iterate(o_handler, function(key) {
+		if (key in that.handler) {
+			throw Err(`Duplicate handler '${key}'!`)
+		} else {
+			that.handler[key] = this[key]
+		}
+	})
 }
 
 ObjectBuffer.prototype.getBufferedProperties = function() {

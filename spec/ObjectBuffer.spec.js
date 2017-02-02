@@ -22,6 +22,16 @@ describe(`ObjectBuffer`, () => {
 		it(`should have a RingBuffer property`, () => {
 			expect(`RingBuffer` in ObjectBuffer).toBe(true)
 		})
+
+		it(`should throw an exception when overriding a default handler`, () => {
+			expect(() => {
+				new ObjectBuffer({
+					default() {
+
+					}
+				})
+			}).toThrow(Err(`Duplicate handler 'default'!`))
+		})
 	})
 
 	describe(`getBufferedProperties`, () => {
@@ -221,7 +231,17 @@ describe(`ObjectBuffer`, () => {
 		})
 
 		it(`should use the specified default values`, () => {
-			let OB = new ObjectBuffer({}, {
+			let OB = new ObjectBuffer({
+				_test() {
+					this.update = () => {
+						return `test-update`
+					}
+
+					this.get = () => {
+						return `test-get`
+					}
+				}
+			}, {
 				defaultValues: {
 					id: `test`,
 					handler: `_test`,
@@ -298,6 +318,50 @@ describe(`ObjectBuffer`, () => {
 
 			OB.update({})
 			expect(`['test']['test-1']` in OB.getBufferedProperties()).toBe(false)
+		})
+
+		it(`should pass the correct values to a handler`, (done) => {
+			let updateCalled = false
+
+			let OB = new ObjectBuffer({
+				testHandler(size, initalValue) {
+					expect(size).toBe(30)
+					expect(initalValue).toBe(0)
+
+					this.update = (value) => {
+						expect(value).toBe(10)
+
+						updateCalled = true
+
+						return `test-update`
+					}
+
+					this.get = () => {
+						if (updateCalled) {
+							done()
+						}
+
+						return `test-get`
+					}
+				}
+			}, {
+				defaultValues: {
+					id: `test`,
+					handler: `_test`,
+					size: `test-size`
+				}
+			});
+
+			OB.update({
+				test: {
+					'^test-1[30]<testHandler>': 10
+				}
+			})
+
+			let entry = OB.getBufferedProperties()[`['test']['test-1']`]
+
+			// end test
+			entry.instance.get()
 		})
 	})
 })
