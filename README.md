@@ -57,6 +57,7 @@ The structure is as follows:
 * optional: **dataIDPropName** - property name of the data id.
 * optional: **dataIDValue** - value of the data id.
 * optional: **handler**  - custom handler function.
+
 ---
 # Data ID value
 The data ID value is needed when you want to flush the contents of a buffer.
