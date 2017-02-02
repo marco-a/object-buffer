@@ -1,6 +1,6 @@
 {
   "name": "object-buffer",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A simple library to buffer properties on an object.",
   "main": "dist/ObjectBuffer.js",
   "author": "Marco A.",
