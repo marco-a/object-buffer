@@ -181,5 +181,41 @@ describe(`ObjectBuffer`, () => {
 				})
 			}).toThrow(Err(`The global data ID value on 'testID' is not a primitive!`))
 		})
+
+		it(`should delete all properties on global data id change`, () => {
+			let OB = new ObjectBuffer({}, {
+				globalDataID: `dataID`
+			});
+
+			OB.update({
+				dataID: 0,
+
+				test: {
+					'^test-1[3]': 10
+				}
+			})
+
+			expect(OB.getBufferedProperties()[`['test']['test-1']`].instance.get()).toEqual([10, 0, 0])
+
+			OB.update({
+				dataID: 0,
+
+				test: {
+					'^test-1[3]': 20
+				}
+			})
+
+			expect(OB.getBufferedProperties()[`['test']['test-1']`].instance.get()).toEqual([20, 10, 0])
+
+			OB.update({
+				dataID: 1,
+
+				test: {
+					'^test-1[3]': 33
+				}
+			})
+
+			expect(OB.getBufferedProperties()[`['test']['test-1']`].instance.get()).toEqual([33, 0, 0])
+		})
 	})
 })
